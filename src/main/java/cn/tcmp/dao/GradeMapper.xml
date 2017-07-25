@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.tcmp.dao.GradeMapper">
+
+    <resultMap id="gradeMap" type="cn.tcmp.entity.Grade">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="grade_name" property="gradeName" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="DATE"/>
+        <result column="details" property="details" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--按班级名查总记录数-->
+    <select id="queryCountGradeByName" resultType="Integer">
+        SELECT
+            COUNT(*)
+            FROM grade
+            <if test="gradeName!=null">
+                WHERE
+                grade_name LIKE concat('%',#{gradeName},'%')
+            </if>
+    </select>
+
+    <!--按班级名模糊查询并分页展示-->
+    <select id="queryGradeByName" resultMap="gradeMap">
+        SELECT
+            id,
+            grade_name,
+            create_date,
+            details
+            FROM grade
+            <if test="gradeName!=null and gradeName!=''">
+                where grade_name like concat('%',#{gradeName},'%')
+            </if>
+            order by create_date DESC
+            limit #{start},#{rows}
+    </select>
+
+    <!--按id查单个班级-->
+    <select id="queryGradeById" parameterType="Integer" resultMap="gradeMap">
+        SELECT
+            id,
+            grade_name,
+            create_date,
+            details
+            FROM grade
+            WHERE id=#{id}
+    </select>
+
+    <!--添加班级-->
+    <insert id="addGrade" parameterType="Grade">
+        INSERT INTO grade
+            (grade_name,create_date,details)
+            VALUES
+            (#{gradeName},#{createDate},#{details})
+    </insert>
+
+    <!--修改班级-->
+    <update id="updateGrade" parameterType="Grade">
+        UPDATE grade
+            SET
+            details=#{details}
+            WHERE id=#{id}
+    </update>
+
+    <!--删除单个班级-->
+    <delete id="deleteGradeById" parameterType="Integer">
+        DELETE
+            FROM grade
+            WHERE id=#{id}
+    </delete>
+    
+    <!--删除多个班级-->
+    <delete id="deleteGradeByIdList">
+        DELETE
+            FROM grade
+            WHERE id
+            IN
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </delete>
+
+    <!--添加、修改学生时查询全部班级-->
+    <select id="queryAllGrade" resultMap="gradeMap">
+        SELECT *
+            FROM grade
+            ORDER BY grade_name ASC
+    </select>
+
+</mapper>

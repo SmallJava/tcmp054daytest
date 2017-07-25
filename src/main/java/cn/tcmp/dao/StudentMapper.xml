@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.tcmp.dao.StudentMapper">
+
+    <resultMap id="studentMap" type="Student">
+        <id column="id" property="id"></id>
+        <result column="student_name" property="studentName"></result>
+        <result column="gender" property="gender"></result>
+        <result column="age" property="age"></result>
+        <result column="student_num" property="studentNum"></result>
+        <!-- Student多对一Grade -->
+        <association property="grade" resultMap="gradeMap" javaType="Grade"></association>
+    </resultMap>
+
+    <resultMap id="gradeMap" type="Grade">
+        <id column="grade_id" property="id" jdbcType="INTEGER"/>
+        <result column="grade_name" property="gradeName" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="DATE"/>
+        <result column="details" property="details" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--学生总记录数-->
+    <select id="queryCountStudent" resultType="Integer" >
+        SELECT count(1)
+            FROM  student s, grade g
+            WHERE s.grade_id=g.id
+    </select>
+
+    <!--分页展示全部学生-->
+    <select id="queryStudent" resultMap="studentMap">
+        SELECT
+            s.id,
+            s.student_name,
+            s.gender,
+            s.age,
+            s.student_num,
+            g.grade_name
+            FROM student s, grade g
+            WHERE s.grade_id=g.id
+            ORDER BY g.grade_name
+            limit #{start},#{rows}
+    </select>
+
+    <!--添加学生-->
+    <insert id="addStudent" parameterType="Student">
+        INSERT INTO student
+        (student_name, gender, age, student_num, grade_id)
+        VALUES
+        (#{studentName},#{gender},#{age},#{studentNum},#{grade.id})
+    </insert>
+
+    <!--按id查单个学生-->
+    <select id="queryStudentById" resultMap="studentMap" parameterType="Integer">
+        SELECT
+            s.id,
+            s.student_name,
+            s.gender,
+            s.age,
+            s.student_num,
+            s.grade_id,
+            g.grade_name,
+            g.details
+            FROM student s, grade g
+            WHERE s.grade_id=g.id
+            AND s.id=#{id}
+    </select>
+
+    <!--修改学生-->
+    <update id="updateStudent" parameterType="Student">
+        UPDATE student
+            SET
+            grade_id=#{grade.id},
+            student_name=#{studentName},
+            gender=#{gender},
+            age=#{age},
+            student_num=#{studentNum}
+            WHERE id=#{id}
+    </update>
+
+    <!--删除单个学生-->
+    <delete id="deleteStudentById" parameterType="Integer">
+        DELETE
+            FROM student
+            WHERE id=#{id}
+    </delete>
+
+    <!--删除多个学生-->
+
+    <!--删除单个班级之前先删除学生-->
+    <delete id="deleteStudentByGradeId" parameterType="Integer">
+        DELETE
+            FROM student
+            WHERE grade_id=#{gradeId}
+    </delete>
+
+    <!--删除多个班级之前先删除学生-->
+    <delete id="deleteStudentByGradeIdList" parameterType="java.util.List">
+        DELETE
+            FROM student
+            WHERE grade_id
+            IN
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </delete>
+
+    <!--按外键班级id查学生-->
+    <select id="queryStudentByGradeId" resultMap="studentMap" parameterType="Integer">
+        SELECT
+            id,
+            student_name
+            FROM student
+            WHERE grade_id=#{gradeId}
+    </select>
+
+</mapper>

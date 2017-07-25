@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.tcmp.dao.HobbyMapper">
+
+    <resultMap id="hobbyMap" type="cn.tcmp.entity.Hobby">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="hobby_name" property="hobbyName" jdbcType="VARCHAR"></result>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"></result>
+    </resultMap>
+
+    <!--总记录数-->
+    <select id="queryCountHobby" resultType="Integer">
+        SELECT count(1)
+            FROM hobby
+    </select>
+
+    <!--分页展示全部爱好-->
+    <select id="queryHobby" resultMap="hobbyMap">
+        SELECT
+            id,
+            hobby_name,
+            create_time
+            FROM hobby
+            ORDER BY create_time DESC
+            LIMIT #{start},#{rows}
+    </select>
+    
+    <!--添加爱好-->
+    <insert id="addHobby" parameterType="Hobby">
+        INSERT INTO hobby
+            (hobby_name, create_time)
+            VALUES
+            (#{hobbyName}, #{createTime})
+    </insert>
+
+    <!--按id查单个爱好，用于修改前展示-->
+    <select id="queryHobbyById" resultMap="hobbyMap" parameterType="Integer">
+        SELECT *
+            FROM hobby
+            WHERE id=#{id}
+    </select>
+
+    <!--修改爱好-->
+    <insert id="updateHobby" parameterType="Hobby">
+        UPDATE hobby
+            SET
+            hobby_name=#{hobbyName}
+            WHERE id=#{id}
+    </insert>
+
+    <!--删除爱好-->
+    <delete id="deleteHobby" parameterType="Integer">
+        DELETE
+            FROM hobby
+            WHERE id=#{id}
+    </delete>
+
+    <!--删除多个爱好-->
+    <delete id="deleteHobbyByIdList">
+        DELETE
+        FROM hobby
+        WHERE id
+        IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

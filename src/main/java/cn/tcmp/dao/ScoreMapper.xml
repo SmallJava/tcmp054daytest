@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.tcmp.dao.ScoreMapper">
+    <resultMap id="scoreMap" type="Score">
+        <id column="id" property="id"></id>
+        <result column="score" property="score"></result>
+        <association property="student" resultMap="studentMap" javaType="Student"></association>
+        <association property="course" resultMap="courseMap" javaType="Course"></association>
+    </resultMap>
+
+    <resultMap id="studentMap" type="Student">
+        <id column="student_id" property="id"></id>
+        <result column="student_name" property="studentName"></result>
+        <association property="grade" resultMap="gradeMap" javaType="Grade"></association>
+    </resultMap>
+    <resultMap id="gradeMap" type="Grade">
+        <id column="grade_id" property="id"></id>
+        <result column="grade_name" property="gradeName"></result>
+    </resultMap>
+    
+    <resultMap id="courseMap" type="Course">
+        <id column="course_id" property="id"></id>
+        <result column="course_name" property="courseName"></result>
+    </resultMap>
+
+    <!--按班级id或学生id查总记录数-->
+    <select id="queryCountScoreByGradeIdOrStudentId" resultType="Integer">
+        SELECT
+            count(*)
+            FROM
+            score s ,
+            course c,
+            student st,
+            grade g
+            WHERE s.course_id=c.id
+            AND s.student_id=st.id
+            AND st.grade_id=g.id
+            AND st.grade_id=#{gradeId}
+            <if test="studentId!=null">
+                AND s.student_id=#{studentId}
+            </if>
+    </select>
+
+    <!--按班级id或学生id查成绩并分页展示-->
+    <select id="queryScoreByGradeIdOrStudentId" resultMap="scoreMap">
+        SELECT
+            s.id,
+            s.score,
+            c.course_name,
+            st.student_name,
+            g.grade_name
+            FROM
+            score s ,
+            course c,
+            student st,
+            grade g
+            WHERE s.course_id=c.id
+            AND s.student_id=st.id
+            AND st.grade_id=g.id
+            AND st.grade_id=#{gradeId}
+            <if test="studentId!=null">
+                AND s.student_id=#{studentId}
+            </if>
+            ORDER BY st.grade_id
+            LIMIT #{start},#{rows}
+    </select>
+
+</mapper>
