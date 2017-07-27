@@ -28,6 +28,7 @@ public interface StudentMapper {
     Integer deleteStudentById(Integer id);
 
     //删除多个学生
+    Integer deleteStudentByIdList(List<Integer> idList);
 
     //删除单个班级之前先删除学生
     Integer deleteStudentByGradeId(Integer gradeId);
