@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,9 +63,9 @@ public class StudentController {
         Integer count = studentService.addStudent(student);
         Message msg = new Message();
         if (count > 0) {
-            msg.setMsg("增加成功");
+            msg.setMsg("添加成功");
         } else {
-            msg.setMsg("增加失败，请联系管理员");
+            msg.setMsg("添加失败，请联系管理员");
         }
         return JSONArray.toJSONString(msg);
     }
@@ -113,9 +114,34 @@ public class StudentController {
         Integer count = studentService.deleteStudentById(id);
         Message msg = new Message();
         if (count > 0) {
-            msg.setMsg("删除单个学生成功");
+            msg.setMsg("删除单个成功");
         } else {
-            msg.setMsg("删除单个学生失败");
+            msg.setMsg("删除单个失败");
+        }
+        return JSONArray.toJSONString(msg);
+    }
+
+    /**
+     * 删除多个学生
+     * @param studentIdListStr
+     * @return
+     */
+    @RequestMapping(value = "deleteStudentByIdList", method = RequestMethod.POST,
+            produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String deleteStudentByIdList(String studentIdListStr) {
+        //字符串转为数组
+        String[] idStrArray = studentIdListStr.split(",");
+        List<Integer> idList = new ArrayList<>();
+        for (int i=0;i<idStrArray.length;i++) {
+            idList.add(Integer.parseInt(idStrArray[i]));
+        }
+        Integer count = studentService.deleteStudentByIdList(idList);
+        Message msg = new Message();
+        if (count > 0) {
+            msg.setMsg("删除多个成功");
+        } else {
+            msg.setMsg("删除多个失败");
         }
         return JSONArray.toJSONString(msg);
     }

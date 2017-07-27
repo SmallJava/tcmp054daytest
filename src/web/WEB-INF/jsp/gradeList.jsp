@@ -15,7 +15,7 @@
            initGradeData();
         });
         function initGradeData(){
-            $("#gradeDataGrid").datagrid({
+            $("#gradeDatagrid").datagrid({
                 //一个URL从远程站点请求数据
                 url:'${pageContext.request.contextPath}/grade/quryGrade.controller',
                 //该方法类型请求远程数据
@@ -30,7 +30,7 @@
                 title:'班级信息',
                 //在请求远程数据的时候发送额外的参数
                 queryParams:{},
-                //如果为true，则在DataGrid控件底部显示分页工具栏
+                //如果为true，则在Datagrid控件底部显示分页工具栏
                 pagination:true,
                 //在设置分页属性的时候初始化页面大小
                 pageSize:5,
@@ -39,6 +39,12 @@
                 //数据表格的顶部工具栏
                 toolbar:[
                     {
+                        text:'添加',
+                        iconCls:'icon-add',
+                        handler:function () {
+                            showAddGrade();   //展示添加窗口
+                        }
+                    },{
                         text: '批量删除',
                         iconCls:'icon-remove',
                         handler:function () {
@@ -49,15 +55,15 @@
                 //显示的字段
                 columns:[[
                     {field:'ck',checkbox:true},     //复选框
-                    {field:'gradeName',title:'班级名',width:100},
+                    {field:'gradeName',title:'班级名称',width:100},
                     {field:'createDate',title:'创建时间',width:200,formatter:dataFormat},       //格式化创建时间
-                    {field:'id',title:'操作列',width:200,formatter:info}       //操作列
+                    {field:'id',title:'操作列',width:200,formatter:operFormat}       //操作列
                 ]]
             });
         }
 
         //操作列
-        function info(rowData){
+        function operFormat(rowData){
             var queryGradeByIdStr = '<a href="javascript:queryGradeById(\'' + rowData + '\')">详情</a>';
             var editGradeByIdStr = '<a href="javascript:updateGrade(\'' + rowData + '\')">修改</a>';
             var deleteGradeByIdStr = '<a href="javascript:deleteGradeById(\'' + rowData + '\')">删除</a>';
@@ -77,9 +83,9 @@
         //按班级名称查询
         function queryGrade(){
             var gradeName=$("#gradeName").val();
-            var queryParams=$("#gradeDataGrid").datagrid('options').queryParams;
+            var queryParams=$("#gradeDatagrid").datagrid('options').queryParams;
             queryParams.gradeName=gradeName;
-            $("#gradeDataGrid").datagrid('load');
+            $("#gradeDatagrid").datagrid('load');
         }
 
 
@@ -115,7 +121,7 @@
                     alert(dataObj.msg);
                     clearAddForm();
                     $("#addGradeWindow").window('close');
-                    $("#gradeDataGrid").datagrid('load');
+                    $("#gradeDatagrid").datagrid('load');
                 }
             })
         }
@@ -134,9 +140,9 @@
                     var details=data.details;
                     var greadId=data.id;
                     $("#id").textbox('setValue',greadId);
-                    $("#updeateGradeName").textbox("setValue",gradeName);
+                    $("#updateGradeName").textbox("setValue",gradeName);
                     $("#updateDetails").textbox("setValue",details);
-                    $("#updeGradeWindow").window('open');
+                    $("#updateGradeWindow").window('open');
                 }
             });
         }
@@ -148,8 +154,8 @@
                 success:function(data){
                     var dataObj = JSON.parse(data);
                     alert(dataObj.msg);
-                    $("#gradeDataGrid").datagrid('load');
-                    $("#updeGradeWindow").window('close');
+                    $("#gradeDatagrid").datagrid('load');
+                    $("#updateGradeWindow").window('close');
                 }
             });
         }
@@ -165,7 +171,7 @@
                     function (data, status) {
                         if(status=="success") {
                             alert(data.msg);
-                            $("#gradeDataGrid").datagrid('load');
+                            $("#gradeDatagrid").datagrid('load');
                         }
                     }
                 );
@@ -175,7 +181,7 @@
         /*删除多个班级*/
         function doDeleteGradeByIdList() {
             //1.获取选中项的班级的id
-            var item = $("#gradeDataGrid").datagrid('getSelections');
+            var item = $("#gradeDatagrid").datagrid('getSelections');
             if (item.length<1) {
                 alert("请选择要删除的班级");
                 return;
@@ -193,7 +199,7 @@
                             //3.展示返回数据
                             alert(data.msg);
                             //4.班级列表刷新
-                            $("#gradeDataGrid").datagrid('load');
+                            $("#gradeDatagrid").datagrid('load');
                         }
                     }
                 );
@@ -219,7 +225,7 @@
 
     <!--数据展示-->
     <div>
-        <table id="gradeDataGrid"></table>
+        <table id="gradeDatagrid"></table>
     </div>
 
     <%--班级详情的Window--%>
@@ -251,13 +257,15 @@
                     <td>班级名称：</td>
                     <td>
                         <input  class="easyui-validatebox" id="addGradeName" name="gradeName"
-                                data-options="required:true"/>
+                            <%--限制输入字符的长度在1到10之间--%>
+                            data-options="required:true, validType:'length[1,10]'"/>
                     </td>
                 </tr>
                 <tr>
                     <td>班级描述：</td>
                     <td>
                         <input class="easyui-textBox" id="addDetails" name="details"
+                               <%--多行--%>
                                data-options="multiline:true"/>
                     </td>
                 </tr>
@@ -266,7 +274,7 @@
                         <a href="javascript:void(0)" onclick="addGrade()" class="easyui-linkbutton">提交</a>
                     </td>
                     <td>
-                        <a href="javascript:void(0)" onclick="clearAddForm()" class="easyui-linkbutton">重置</a>
+                        <a href="javascript:void(0)" onclick="clearAddForm()" class="easyui-linkbutton">清空</a>
                     </td>
                 </tr>
             </table>
@@ -274,7 +282,7 @@
     </div>
 
     <%--修改班级window--%>
-    <div id="updeGradeWindow" class="easyui-window" title="修改班级" closed="true"
+    <div id="updateGradeWindow" class="easyui-window" title="修改班级" closed="true"
          style="top:30%;left: 30%;width: 500px;height: 200px" >
         <div style="padding:10px 65px 10px 65px">
             <form id="updateGradeForm" method="post">
@@ -283,7 +291,7 @@
                         <td>班级名称：</td>
                         <td>
                             <%--只读，不可修改--%>
-                            <input class="easyui-textbox" id="updeateGradeName" name="gradeName" value="" readonly/>
+                            <input class="easyui-textbox" id="updateGradeName" name="gradeName" value="" readonly/>
                         </td>
                     </tr>
                     <tr>

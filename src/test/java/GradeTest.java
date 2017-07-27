@@ -31,8 +31,8 @@ public class GradeTest extends TestBase {
     //按id查单个班级
     @Test
     public void testqueryGradeById(){
-        Grade grade=gradeService.queryGradeById(8);
-        System.out.println(grade.getDetails());
+        Grade grade=gradeService.queryGradeById(2);
+        System.out.println(grade.toString());
     }
 
     //添加班级

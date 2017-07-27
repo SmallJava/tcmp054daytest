@@ -25,6 +25,7 @@ public interface StudentService {
     Integer deleteStudentById(Integer id);
 
     //删除多个学生
+    Integer deleteStudentByIdList(List<Integer> idList);
 
     //按外键班级id查学生
     List<Student> queryStudentByGradeId(Integer gradeId);

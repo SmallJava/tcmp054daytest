@@ -37,6 +37,13 @@ public class HobbyTest extends TestBase {
         System.out.println(count);
     }
 
+    //按id查单个爱好
+    @Test
+    public void testqueryCourseById(){
+        Hobby hobby=hobbyService.queryHobbyById(20);
+        System.out.println(hobby.toString());
+    }
+
     //修改爱好
     @Test
     public void testUpdateHobby() {

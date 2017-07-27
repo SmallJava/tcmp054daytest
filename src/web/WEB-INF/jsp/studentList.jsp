@@ -29,8 +29,8 @@
                 //如果为true，则显示一个行号列
                 rownumbers:true,
                 //在面板头部显示的标题
-                title:'学生列表',
-                //如果为true，则在DataGrid控件底部显示分页工具栏
+                title:'学生信息',
+                //如果为true，则在Datagrid控件底部显示分页工具栏
                 pagination:true,
                 //在设置分页属性的时候初始化页面大小
                 pageSize:5,
@@ -44,20 +44,28 @@
                         handler:function () {
                             showAddGradeWindow();
                         }
+                    },{
+                        text:'批量删除',
+                        iconCls:'icon-remove',
+                        handler:function () {
+                            doDeleteStudentByIdList();
+                        }
                     }
                 ],
                 //显示的字段
                 columns:[[
+                    {field:'ck',checkbox:true},     //复选框
                     {field:'studentName',title:'姓名',width:80},
                     {field:'gender',title:'性别',width:40},
                     {field:'age',title:'年龄',width:40},
                     {field:'studentNum',title:'学号',width:160},
-                    {field:'grade',title:'班级名称',width:100,formatter:formGrade},
-                    {field:'id',title:'操作',width:120,formatter:operFormat}
+                    {field:'grade',title:'班级名称',width:100,formatter:formGrade},       //班级
+                    {field:'id',title:'操作',width:120,formatter:operFormat}      //操作列
                 ]]
             });
         }
 
+        //班级
         function formGrade(rowData) {
             return rowData.gradeName;
         }
@@ -80,8 +88,9 @@
                 function (data, status) {
                     if(status=="success") {
                         $("#studentForm").form('load',data);
+                        //获得班级的信息放入studentForm中
                         var grade=data.grade;
-                        $("#gradeForm").form('load',grade);
+                        $("#studentForm").form('load',grade);
                         $("#studentWindow").window('open');
                     }
                 }
@@ -248,6 +257,36 @@
             }
         }
 
+        /*
+         *删除多个学生
+         */
+        function doDeleteStudentByIdList() {
+            //1.获取选中项的学生的id
+            var item = $("#studentDatagrid").datagrid('getSelections');
+            if (item.length<1) {
+                alert("请选择要删除的学生");
+                return;
+            }
+            var ids = "";
+            for(var i=0;i<item.length;i++) {
+                ids += item[i].id + ",";
+            }
+            if (confirm("确定要删除这些学生吗？")) {
+                //2.请求controller
+                $.post('${pageContext.request.contextPath}/student/deleteStudentByIdList.controller',
+                    {"studentIdListStr":ids},
+                    function (data, status) {
+                        if(status=="success") {
+                            //3.展示返回数据
+                            alert(data.msg);
+                            //4.学生列表刷新
+                            $("#studentDatagrid").datagrid('load');
+                        }
+                    }
+                );
+            }
+        }
+
 
     </script>
 </head>
@@ -275,10 +314,6 @@
                     <td>学号：</td>
                     <td><input class="easyui-textbox" name="studentNum"></td>
                 </tr>
-            </table>
-        </form>
-        <form id="gradeForm" action="">
-            <table>
                 <tr>
                     <td>班级名称：</td>
                     <td><input class="easyui-textbox" name="gradeName">

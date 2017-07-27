@@ -97,9 +97,9 @@ public class GradeContrller {
         Message msg = new Message();
         Integer count = gradeService.updateGrade(grade);
         if (count > 0) {
-            msg.setMsg("修改班级成功");
+            msg.setMsg("修改成功");
         } else {
-            msg.setMsg("修改班级失败");
+            msg.setMsg("修改失败");
         }
         return JSONArray.toJSONString(msg);
     }
@@ -116,9 +116,9 @@ public class GradeContrller {
         Integer count = gradeService.deleteGradeById(gradeId);
         Message msg = new Message();
         if (count > 0) {
-            msg.setMsg("删除单个班级成功");
+            msg.setMsg("删除单个成功");
         } else {
-            msg.setMsg("删除单个班级失败");
+            msg.setMsg("删除单个失败");
         }
         return JSONArray.toJSONString(msg);
     }
@@ -141,9 +141,9 @@ public class GradeContrller {
         Integer count = gradeService.deleteGradeByIdList(idList);
         Message msg = new Message();
         if (count > 0) {
-            msg.setMsg("删除多个班级成功");
+            msg.setMsg("删除多个成功");
         } else {
-            msg.setMsg("删除多个班级失败");
+            msg.setMsg("删除多个失败");
         }
         return JSONArray.toJSONString(msg);
     }

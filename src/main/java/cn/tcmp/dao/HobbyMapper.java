@@ -24,7 +24,7 @@ public interface HobbyMapper {
     //修改爱好
     Integer updateHobby(Hobby hobby);
 
-    //删除爱好
+    //删除单个爱好
     Integer deleteHobby(Integer id);
 
     //删除多个爱好

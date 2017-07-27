@@ -49,7 +49,7 @@
             WHERE id=#{id}
     </insert>
 
-    <!--删除爱好-->
+    <!--删除单个爱好-->
     <delete id="deleteHobby" parameterType="Integer">
         DELETE
             FROM hobby

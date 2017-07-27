@@ -56,7 +56,7 @@ public class HobbyServiceImpl implements HobbyService{
         return hobbyMapper.updateHobby(hobby);
     }
 
-    //删除爱好
+    //删除单个爱好
     @Override
     public Integer deleteHobby(Integer id) {
         return hobbyMapper.deleteHobby(id);

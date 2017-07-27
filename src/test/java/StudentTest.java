@@ -6,6 +6,7 @@ import cn.tcmp.tools.PageUtil;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class StudentTest extends TestBase {
     @Test
     public void testQueryStudentById() {
         Student student = studentService.queryStudentById(2);
-        System.out.println(student);
+        System.out.println(student.toString());
     }
 
     //修改学生
@@ -73,7 +74,14 @@ public class StudentTest extends TestBase {
     }
 
     //删除多个学生
-
+    @Test
+    public void testDeleteStudentByIdList() {
+        List<Integer> idList = new ArrayList<>();
+        idList.add(14);
+        idList.add(15);
+        Integer count = studentService.deleteStudentByIdList(idList);
+        System.out.println(count);
+    }
 
     //按外键班级id查学生
     @Test

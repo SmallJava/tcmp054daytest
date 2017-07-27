@@ -24,7 +24,7 @@
                 striped:true,
                 idField:'id',
                 rownumbers:true,
-                title:'爱好列表',
+                title:'爱好信息',
                 pagination:true,
                 pageSize:5,
                 pageList:[2,5,10],
@@ -97,12 +97,12 @@
          */
         //展示修改爱好Window
         function doUpdateHobby(rowData) {
-            updateStudentFormSetValue(rowData);
+            updateHobbyFormSetValue(rowData);
             //展示
             $("#updateHobbyWindow").window('open');
         }
 
-        function updateStudentFormSetValue(rowData) {
+        function updateHobbyFormSetValue(rowData) {
             $.post("${pageContext.request.contextPath}/hobby/queryHobbyById.controller",
                 {"id":rowData},
                 function(data,status){
@@ -138,7 +138,7 @@
         //重置修改爱好Form
         function resetUpdateHobby() {
             var hobbyId = $("#updateHobbyId").textbox('getValue');
-            updateStudentFormSetValue(hobbyId);
+            updateHobbyFormSetValue(hobbyId);
         }
 
 
@@ -165,7 +165,7 @@
          */
         function doDeleteHobbyByIdList() {
             //1.获取选中项的爱好的id
-            var item = $("#hobbyDataGrid").datagrid('getSelections');
+            var item = $("#hobbyDatagrid").datagrid('getSelections');
             if (item.length<1) {
                 alert("请选择要删除的爱好");
                 return;
@@ -183,7 +183,7 @@
                             //3.展示返回数据
                             alert(data.msg);
                             //4.爱好列表刷新
-                            $("#hobbyDataGrid").datagrid('load');
+                            $("#hobbyDatagrid").datagrid('load');
                         }
                     }
                 );

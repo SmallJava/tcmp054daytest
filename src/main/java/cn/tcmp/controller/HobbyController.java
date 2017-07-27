@@ -115,9 +115,9 @@ public class HobbyController {
         Integer count = hobbyService.deleteHobby(id);
         Message msg = new Message();
         if (count > 0) {
-            msg.setMsg("删除爱好成功");
+            msg.setMsg("删除成功");
         } else {
-            msg.setMsg("删除爱好失败，请联系管理员");
+            msg.setMsg("删除失败，请联系管理员");
         }
         return JSONArray.toJSONString(msg);
     }
@@ -140,9 +140,9 @@ public class HobbyController {
         Integer count = hobbyService.deleteHobbyByIdList(idList);
         Message msg = new Message();
         if (count > 0) {
-            msg.setMsg("删除多个爱好成功");
+            msg.setMsg("删除多个成功");
         } else {
-            msg.setMsg("删除多个爱好失败");
+            msg.setMsg("删除多个失败");
         }
         return JSONArray.toJSONString(msg);
     }

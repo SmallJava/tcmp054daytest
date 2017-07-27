@@ -57,7 +57,7 @@
                     alert("请选择班级或者班级的学生");
                     return;
                 }
-                $("#scoreDataGrid").datagrid({
+                $("#scoreDatagrid").datagrid({
                     url:'${pageContext.request.contextPath}/score/queryScoreByGradeIdOrStudentId.controller',
                     method:'GET',
                     striped:true,
@@ -99,7 +99,7 @@
             </form>
         </div>
         <div>
-            <table id="scoreDataGrid"></table>
+            <table id="scoreDatagrid"></table>
         </div>
     </body>
 </html>

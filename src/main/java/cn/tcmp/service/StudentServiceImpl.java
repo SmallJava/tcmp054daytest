@@ -65,6 +65,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     //删除多个学生
+    @Override
+    public Integer deleteStudentByIdList(List<Integer> idList) {
+        Integer count = studentMapper.deleteStudentByIdList(idList);
+        return count;
+    }
 
 
     //按外键班级id查学生
